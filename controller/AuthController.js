@@ -97,3 +97,16 @@ export const handlegGetLabelList = async (req, res) => {
   console.log("Inside handlegGetLabelList", resp.data.labels);
   res.send({ data: resp.data.labels, success: true });
 };
+
+export const handleLogoutUser = async (req, res) => {
+  console.log("Inside handleLogoutUser");
+
+  oAuth2Client.revokeCredentials(function (err, body) {
+    if (err) {
+      console.log("error while logout is", err);
+    } else {
+      console.log("user loggedout successfully ");
+    }
+  });
+  return res.send({ success: true, message: "user loggedout successfully" });
+};

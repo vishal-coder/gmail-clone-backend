@@ -4,6 +4,7 @@ import {
   handleGoogleRedirect,
   handlegGetUserProfile,
   handlegGetLabelList,
+  handleLogoutUser,
 } from "../controller/AuthController.js";
 
 import { auth } from "../middleware/MiddlewareAuth.js";
@@ -20,5 +21,6 @@ router.get("/handleGoogleRedirect", handleGoogleRedirect);
 // router.get("/redirect", handleRedirect);
 router.get("/getUserProfile", auth, handlegGetUserProfile);
 router.get("/getLabelList", auth, handlegGetLabelList);
+router.get("/logoutUser", auth, handleLogoutUser);
 
 export const authRouter = router;
