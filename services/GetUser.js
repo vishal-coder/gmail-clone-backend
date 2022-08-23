@@ -1,26 +1,12 @@
 import { google } from "googleapis";
-export function getUser(auth) {
-  // getGoogleUser(auth);
-  console.log("auth in getuser", auth);
+import { oAuth2Client } from "../index.js";
 
-  var gmail = google.gmail({
-    auth: auth,
-    version: "v1",
+export async function getUser() {
+  let oauth2 = google.oauth2({
+    auth: oAuth2Client,
+    version: "v2",
   });
-  gmail.users.getProfile(
-    {
-      auth: auth,
-      userId: "me",
-    },
-    function (err, res) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("inside else of get profile");
-        console.log("emailAddress", res.data.emailAddress);
-        console.log(JSON.stringify(res));
-        return res;
-      }
-    }
-  );
+  console.log("now calling get user profile");
+  let { data } = await oauth2.userinfo.get();
+  return data;
 }

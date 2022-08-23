@@ -5,6 +5,7 @@ import { google } from "googleapis";
 import { client } from "../index.js";
 import jwt from "jsonwebtoken";
 import { getRefreshToken, storeRefreshToken } from "../models/AuthModel.js";
+import { getLabelList } from "../services/GetLabels.js";
 
 //https://github.com/googleapis/google-api-nodejs-client#authorizing-and-authenticating
 
@@ -49,6 +50,7 @@ export const handleGoogleRedirect = async (req, res) => {
     console.log("now calling get user profile");
     let { data } = await oauth2.userinfo.get(); // get user info
     console.log("user profile is---", data);
+    var token = jwt.sign({ id: data.email }, process.env.SECRET_KEY);
 
     if (accessToken && refreshToken) {
       storeRefreshToken(data.email, refreshToken);
@@ -61,18 +63,37 @@ export const handleGoogleRedirect = async (req, res) => {
       console.log("tokens.access_token only", tokens.access_token);
     }
 
-    var token = jwt.sign({ id: data.email }, process.env.SECRET_KEY);
+    oAuth2Client.on("tokens", (tokens) => {
+      if (tokens.refresh_token) {
+        // store the refresh_token in my database!
+        console.log(tokens.refresh_token);
+      }
+      console.log(tokens.access_token);
+    });
+
     res.header("x-auth-token", token);
     res.redirect("http://localhost:3000/?token=" + token);
   });
 };
 
-export const handlegGetUserProfile = (req, res) => {
-  console.log("Inside handlegGetUserProfile");
-  res.send({ message: "handlegGetUserProfile", success: true });
+export const handlegGetUserProfile = async (req, res) => {
+  console.log("Inside handlegGetUserProfile", oAuth2Client);
+
+  const data = await getUser();
+  res.send({ data: data, success: true });
 };
 
-export const handlegGetLabelList = (req, res) => {
-  console.log("Inside handlegGetLabelList");
-  res.send({ message: "handlegGetLabelList", success: true });
+export const handlegGetLabelList = async (req, res) => {
+  console.log("Inside handlegGetLabelList", new Date());
+  let labellist = null;
+
+  var gmail = google.gmail({
+    auth: oAuth2Client,
+    version: "v1",
+  });
+  const resp = await gmail.users.labels.list({
+    userId: "me",
+  });
+  console.log("Inside handlegGetLabelList", resp.data.labels);
+  res.send({ data: resp.data.labels, success: true });
 };
