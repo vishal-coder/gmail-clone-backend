@@ -6,6 +6,7 @@ import { client } from "../index.js";
 import jwt from "jsonwebtoken";
 import { getRefreshToken, storeRefreshToken } from "../models/AuthModel.js";
 import { getLabelList } from "../services/GetLabels.js";
+import { fetchMailList } from "../services/GetMailList.js";
 
 //https://github.com/googleapis/google-api-nodejs-client#authorizing-and-authenticating
 
@@ -94,7 +95,7 @@ export const handlegGetLabelList = async (req, res) => {
   const resp = await gmail.users.labels.list({
     userId: "me",
   });
-  console.log("Inside handlegGetLabelList", resp.data.labels);
+  //console.log("Inside handlegGetLabelList", resp.data.labels);
   res.send({ data: resp.data.labels, success: true });
 };
 
@@ -109,4 +110,19 @@ export const handleLogoutUser = async (req, res) => {
     }
   });
   return res.send({ success: true, message: "user loggedout successfully" });
+};
+
+export const handleGetMails = async (req, res) => {
+  console.log("Inside handleGetMails");
+
+  const { mailOption } = req.body;
+  console.log("user handleGetMails  ", mailOption);
+
+  const data = await fetchMailList(mailOption);
+  console.log("user handleGetMails- data  ", data);
+  return res.send({
+    data: data,
+    success: true,
+    message: "mail fetched  successfully",
+  });
 };
