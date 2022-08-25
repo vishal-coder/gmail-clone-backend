@@ -6,6 +6,7 @@ import {
   handlegGetLabelList,
   handleLogoutUser,
   handleGetMails,
+  handleDeleteMails,
 } from "../controller/AuthController.js";
 
 import { auth } from "../middleware/MiddlewareAuth.js";
@@ -24,5 +25,6 @@ router.get("/getUserProfile", auth, handlegGetUserProfile);
 router.get("/getLabelList", auth, handlegGetLabelList);
 router.get("/logoutUser", auth, handleLogoutUser);
 router.post("/getMails", auth, handleGetMails);
+router.post("/deleteMail", auth, handleDeleteMails);
 
 export const authRouter = router;

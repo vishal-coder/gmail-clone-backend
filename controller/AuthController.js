@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import { getRefreshToken, storeRefreshToken } from "../models/AuthModel.js";
 import { getLabelList } from "../services/GetLabels.js";
 import { fetchMailList } from "../services/GetMailList.js";
+import { deleteMail } from "../services/DeleteMail.js";
 
 //https://github.com/googleapis/google-api-nodejs-client#authorizing-and-authenticating
 
@@ -119,9 +120,21 @@ export const handleGetMails = async (req, res) => {
   console.log("user handleGetMails  ", mailOption);
 
   const data = await fetchMailList(mailOption);
-  console.log("user handleGetMails- data  ", data);
+  //console.log("user handleGetMails- data  ", data);
   return res.send({
     data: data,
+    success: true,
+    message: "mail fetched  successfully",
+  });
+};
+
+export const handleDeleteMails = (req, res) => {
+  console.log("user handleDeleteMails:");
+  const { id } = req.body;
+  console.log("user handleDeleteMails  ", id);
+
+  deleteMail(id);
+  return res.send({
     success: true,
     message: "mail fetched  successfully",
   });

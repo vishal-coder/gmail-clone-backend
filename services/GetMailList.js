@@ -35,79 +35,84 @@ async function getmailMetaData(gmail, mlist) {
 }
 
 async function getmail(gmail, id) {
-  const res = await gmail.users.messages.get({
-    userId: "me",
-    id: id,
-    format: "full",
-  });
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  const starred = res.data.labelIds.includes("STARRED");
-  const lables = res.data.labelIds;
-  const snippet = res.data.snippet;
-  let from;
-  let sender;
-  let sendingDate;
-  let subject;
-  let date;
-  res.data.payload.headers.map(function (header) {
-    if (header.name == "From") {
-      // console.log(
-      //   "header object is",
-      //   header.value.substring(0, header.value.indexOf("<"))
-      // );
-      sender = header.value;
-      from = header.value.substring(0, header.value.indexOf("<"));
-    }
-    if (header.name == "Date") {
-      //console.log("rawDate", header.value);
-      const rawDate = new Date(header.value);
-      sendingDate = header.value;
-      //  console.log("rawDate", rawDate);
-      date = `${rawDate.getDate()} ${monthNames[rawDate.getMonth()]}`;
-    }
-    if (header.name == "Subject") {
-      subject = header.value;
-    }
-  });
+  try {
+    console.log("id is", id);
+    const res = await gmail.users.messages.get({
+      userId: "me",
+      id: id,
+      format: "full",
+    });
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    const starred = res.data.labelIds.includes("STARRED");
+    const lables = res.data.labelIds;
+    const snippet = res.data.snippet;
+    let from;
+    let sender;
+    let sendingDate;
+    let subject;
+    let date;
+    res.data.payload.headers.map(function (header) {
+      if (header.name == "From") {
+        // console.log(
+        //   "header object is",
+        //   header.value.substring(0, header.value.indexOf("<"))
+        // );
+        sender = header.value;
+        from = header.value.substring(0, header.value.indexOf("<"));
+      }
+      if (header.name == "Date") {
+        //console.log("rawDate", header.value);
+        const rawDate = new Date(header.value);
+        sendingDate = header.value;
+        //  console.log("rawDate", rawDate);
+        date = `${rawDate.getDate()} ${monthNames[rawDate.getMonth()]}`;
+      }
+      if (header.name == "Subject") {
+        subject = header.value;
+      }
+    });
 
-  // console.log(
-  //   "resonse for body.data is -",
-  //   res.data.payload.parts[1].body.data
-  // );
-  let mailBody = new Buffer(
-    res.data.payload.parts[1].body.data,
-    "base64"
-  ).toString("utf-8");
+    // console.log(
+    //   "resonse for body.data is -",
+    //   res.data.payload.parts[1].body.data
+    // );
+    let mailBody = new Buffer(
+      res.data.payload.parts[1].body.data,
+      "base64"
+    ).toString("utf-8");
 
-  // let text = buff;
-  // console.log(buff);
-  // const mailbody = res.data.payload.parts[1].body.data;
+    // let text = buff;
+    // console.log(buff);
+    // const mailbody = res.data.payload.parts[1].body.data;
 
-  //console.log("resonse in push list is", starred, from, snippet, date);
-  const mailData = {
-    id: id,
-    lables: lables,
-    isStarred: starred,
-    from: from,
-    snippet: snippet,
-    date: date,
-    subject: subject,
-    sender: sender,
-    sendingDate: sendingDate,
-    mailbody: mailBody,
-  };
-  return mailData;
+    //console.log("resonse in push list is", starred, from, snippet, date);
+    const mailData = {
+      id: id,
+      lables: lables,
+      isStarred: starred,
+      from: from,
+      snippet: snippet,
+      date: date,
+      subject: subject,
+      sender: sender,
+      sendingDate: sendingDate,
+      mailbody: mailBody,
+    };
+    return mailData;
+  } catch (error) {
+    console.log("error is get mail details is", error);
+  }
 }
