@@ -9,11 +9,7 @@ export const fetchMailList = async (options) => {
     auth: oAuth2Client,
     version: "v1",
   });
-  const res = await gmail.users.messages.list({
-    // The user's email address. The special value `me` can be used to indicate the authenticated user.
-    userId: "me",
-    labelIds: options.labelIds,
-  });
+  const res = await gmail.users.messages.list(options);
   const mlist = res.data.messages;
   //console.log("mlist is---", res.data.messages);
 
