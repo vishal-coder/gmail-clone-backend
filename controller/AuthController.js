@@ -8,6 +8,7 @@ import { getRefreshToken, storeRefreshToken } from "../models/AuthModel.js";
 import { getLabelList } from "../services/GetLabels.js";
 import { fetchMailList } from "../services/GetMailList.js";
 import { deleteMail } from "../services/DeleteMail.js";
+import { updateMailLabels } from "../services/UpdateMailLabels.js";
 
 //https://github.com/googleapis/google-api-nodejs-client#authorizing-and-authenticating
 
@@ -134,6 +135,18 @@ export const handleDeleteMails = (req, res) => {
   console.log("user handleDeleteMails  ", id);
 
   deleteMail(id);
+  return res.send({
+    success: true,
+    message: "mail fetched  successfully",
+  });
+};
+
+export const handleUpdateMailLabels = (req, res) => {
+  console.log("user handleUpdateMailLabels:");
+  const { id, addLabelIds, removeLabelIds } = req.body;
+  console.log("user handleUpdateMailLabels  ", id);
+
+  updateMailLabels(id, addLabelIds, removeLabelIds);
   return res.send({
     success: true,
     message: "mail fetched  successfully",
