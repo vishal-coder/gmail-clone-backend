@@ -9,9 +9,11 @@ export const fetchMailList = async (options) => {
     auth: oAuth2Client,
     version: "v1",
   });
+  // options.maxResults = 10;
+
   const res = await gmail.users.messages.list(options);
   const mlist = res.data.messages;
-  //console.log("mlist is---", res.data.messages);
+  // console.log("mlist is---", res);
 
   const mailList = await getmailMetaData(gmail, mlist);
 
@@ -112,3 +114,21 @@ async function getmail(gmail, id) {
     console.log("error is get mail details is", error);
   }
 }
+
+export const fetchPageTokenInfo = async (options) => {
+  var gmail = google.gmail({
+    auth: oAuth2Client,
+    version: "v1",
+  });
+  options.maxResults = 2;
+  console.log("options", options);
+
+  const res = await gmail.users.messages.list(options);
+  const mlist = res.data.messages;
+  const nextPageToken = res.data.nextPageToken;
+  const resultSizeEstimate = res.data.messages;
+  // console.log("mlist is---", res);
+
+  // console.log("mailList--at return end is", mailList);
+  return { pageToken: nextPageToken, resultSizeEstimate: resultSizeEstimate };
+};

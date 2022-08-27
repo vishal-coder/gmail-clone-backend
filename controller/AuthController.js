@@ -6,9 +6,10 @@ import { client } from "../index.js";
 import jwt from "jsonwebtoken";
 import { getRefreshToken, storeRefreshToken } from "../models/AuthModel.js";
 import { getLabelList } from "../services/GetLabels.js";
-import { fetchMailList } from "../services/GetMailList.js";
+import { fetchMailList, fetchPageTokenInfo } from "../services/GetMailList.js";
 import { deleteMail } from "../services/DeleteMail.js";
 import { updateMailLabels } from "../services/UpdateMailLabels.js";
+import { ForwardMail } from "../services/Forwardmail.js";
 
 //https://github.com/googleapis/google-api-nodejs-client#authorizing-and-authenticating
 
@@ -119,10 +120,11 @@ export const handleGetMails = async (req, res) => {
 
   const { mailOption } = req.body;
   console.log("user handleGetMails  ", mailOption);
-
+  const pageTokenInfo = await fetchPageTokenInfo(mailOption);
   const data = await fetchMailList(mailOption);
   //console.log("user handleGetMails- data  ", data);
   return res.send({
+    pageTokenInfo: pageTokenInfo,
     data: data,
     success: true,
     message: "mail fetched  successfully",
@@ -150,5 +152,18 @@ export const handleUpdateMailLabels = (req, res) => {
   return res.send({
     success: true,
     message: "mail fetched  successfully",
+  });
+};
+
+export const handleForwardMail = (req, res) => {
+  console.log("user handleForwardMail:");
+  const { id, to, body } = req.body;
+  console.log("user handleForwardMail  ", id);
+
+  const data = ForwardMail(id, to, body);
+  console.log("user handleForwardMail response ", data);
+  return res.send({
+    success: true,
+    message: "mail forwarded  successfully",
   });
 };
