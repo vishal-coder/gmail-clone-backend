@@ -11,6 +11,7 @@ import { deleteMail } from "../services/DeleteMail.js";
 import { updateMailLabels } from "../services/UpdateMailLabels.js";
 import { ForwardMail } from "../services/Forwardmail.js";
 import { replyMail } from "../services/ReplyMailService.js";
+import { sendMail } from "../services/SendEmail.js";
 
 //https://github.com/googleapis/google-api-nodejs-client#authorizing-and-authenticating
 
@@ -176,6 +177,19 @@ export const handleReplyMail = (req, res) => {
 
   const data = replyMail(id, body);
   console.log("user handleReplyMail response ", data);
+  return res.send({
+    success: true,
+    message: "mail replied  successfully",
+  });
+};
+
+export const handleSendMail = (req, res) => {
+  console.log("user handleSendMail:");
+  const { to, subject, body } = req.body;
+  console.log("user handleSendMail  ", req.body);
+
+  const data = sendMail(to, subject, body);
+  console.log("user handleSendMail response ", data);
   return res.send({
     success: true,
     message: "mail replied  successfully",
