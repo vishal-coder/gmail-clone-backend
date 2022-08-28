@@ -9,6 +9,7 @@ import {
   handleDeleteMails,
   handleUpdateMailLabels,
   handleForwardMail,
+  handleReplyMail,
 } from "../controller/AuthController.js";
 
 import { auth } from "../middleware/MiddlewareAuth.js";
@@ -30,5 +31,6 @@ router.post("/getMails", auth, handleGetMails);
 router.post("/deleteMail", auth, handleDeleteMails);
 router.post("/updateMailLabels", auth, handleUpdateMailLabels);
 router.post("/forwardMail", auth, handleForwardMail);
+router.post("/replyMail", auth, handleReplyMail);
 
 export const authRouter = router;

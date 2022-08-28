@@ -52,7 +52,7 @@ from: ${from},
 Date:${date}, 
 subject: ${mailSubject}, 
 Sender:  ${sender}`;
-  const mailBody = defaultForwardMsg + "\n\n" + body + "\n\n" + decodedMailBody;
+  const mailBody = body + "\n\n" + defaultForwardMsg + "\n\n" + decodedMailBody;
 
   //   console.log("at end encodedMail-", encodedMail);
   sendMail(gmail, oAuth2Client, to, mailSubject, mailBody);
@@ -71,7 +71,7 @@ async function sendMail(gmail, auth, to, subject, body) {
       },
     },
     function (err, response) {
-      console.log(err || response);
+      //console.log(err || response);
     }
   );
 }
@@ -92,6 +92,7 @@ function makeBody(to, from, subject, message) {
     "\n\n",
     message,
   ].join("");
+  console.log("make body of froward mail is", str);
   var encodedMail = new Buffer(str)
     .toString("base64")
     .replace(/\+/g, "-")

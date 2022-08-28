@@ -10,6 +10,7 @@ import { fetchMailList, fetchPageTokenInfo } from "../services/GetMailList.js";
 import { deleteMail } from "../services/DeleteMail.js";
 import { updateMailLabels } from "../services/UpdateMailLabels.js";
 import { ForwardMail } from "../services/Forwardmail.js";
+import { replyMail } from "../services/ReplyMailService.js";
 
 //https://github.com/googleapis/google-api-nodejs-client#authorizing-and-authenticating
 
@@ -165,5 +166,18 @@ export const handleForwardMail = (req, res) => {
   return res.send({
     success: true,
     message: "mail forwarded  successfully",
+  });
+};
+
+export const handleReplyMail = (req, res) => {
+  console.log("user handleReplyMail:");
+  const { id, body } = req.body;
+  console.log("user handleReplyMail  ", id);
+
+  const data = replyMail(id, body);
+  console.log("user handleReplyMail response ", data);
+  return res.send({
+    success: true,
+    message: "mail replied  successfully",
   });
 };
