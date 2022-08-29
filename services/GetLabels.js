@@ -15,8 +15,6 @@ export async function getLabelList() {
       if (err) return console.log("The API returned an error: " + err);
       labellist = await res.data.labels;
       if (labellist.length) {
-        console.log("Labels:", labellist);
-        // return labels;
       } else {
         console.log("No labels found.");
       }

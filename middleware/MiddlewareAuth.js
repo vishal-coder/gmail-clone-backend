@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-
+//Error: No access, refresh token, API key or refresh handler callback is set.
 export const auth = (request, response, next) => {
   try {
     const token = request.header("x-auth-token");

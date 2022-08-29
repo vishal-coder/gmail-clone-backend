@@ -24,7 +24,6 @@ router.get("/", (req, res) => {
 
 router.get("/createAuthLink", createAuthLink);
 router.get("/handleGoogleRedirect", handleGoogleRedirect);
-// router.get("/redirect", handleRedirect);
 router.get("/getUserProfile", auth, handlegGetUserProfile);
 router.get("/getLabelList", auth, handlegGetLabelList);
 router.get("/logoutUser", auth, handleLogoutUser);

@@ -13,14 +13,11 @@ import { ForwardMail } from "../services/Forwardmail.js";
 import { replyMail } from "../services/ReplyMailService.js";
 import { sendMail } from "../services/SendEmail.js";
 
-//https://github.com/googleapis/google-api-nodejs-client#authorizing-and-authenticating
-
 //create aurhLink and sends in response to google
 export const createAuthLink = async (req, res) => {
   // check for authorization and get access token and refresh token
   const authUrl = await authorize();
 
-  console.log("Authorize this app by visiting this url:", authUrl);
   res.send({ authUrl: authUrl, success: true });
 };
 
@@ -32,8 +29,10 @@ export const handleGoogleRedirect = async (req, res) => {
 
   oAuth2Client.getToken(code, async (err, tokens) => {
     if (err) {
-      console.log("server 39 | error", err);
-      res.status(403).send({ success: false, message: "Plese provide access" });
+      console.log("error", err);
+      res
+        .status(403)
+        .send({ success: false, message: "Please provide access" });
       throw new Error("Issue with Login", err.message);
     }
     console.log("tokens tokens", tokens);
@@ -53,14 +52,11 @@ export const handleGoogleRedirect = async (req, res) => {
       auth: oAuth2Client,
       version: "v2",
     });
-    console.log("now calling get user profile");
     let { data } = await oauth2.userinfo.get(); // get user info
-    console.log("user profile is---", data);
     var token = jwt.sign({ id: data.email }, process.env.SECRET_KEY);
 
     if (accessToken && refreshToken) {
       storeRefreshToken(data.email, refreshToken);
-      console.log("saved in DB----------------", tokens.refresh_token);
     } else {
       const userDBData = await getRefreshToken(data.email);
       oAuth2Client.credentials.refresh_token = userDBData.refresh_token;
@@ -83,14 +79,13 @@ export const handleGoogleRedirect = async (req, res) => {
 };
 
 export const handlegGetUserProfile = async (req, res) => {
-  console.log("Inside handlegGetUserProfile", oAuth2Client);
-
+  console.log("Inside handlegGetUserProfile");
   const data = await getUser();
   res.send({ data: data, success: true });
 };
 
 export const handlegGetLabelList = async (req, res) => {
-  console.log("Inside handlegGetLabelList", new Date());
+  console.log("Inside handlegGetLabelList");
   let labellist = null;
 
   var gmail = google.gmail({
@@ -100,8 +95,8 @@ export const handlegGetLabelList = async (req, res) => {
   const resp = await gmail.users.labels.list({
     userId: "me",
   });
-  //console.log("Inside handlegGetLabelList", resp.data.labels);
-  res.send({ data: resp.data.labels, success: true });
+  labellist = resp.data.labels;
+  res.send({ data: labellist, success: true });
 };
 
 export const handleLogoutUser = async (req, res) => {
@@ -121,10 +116,8 @@ export const handleGetMails = async (req, res) => {
   console.log("Inside handleGetMails");
 
   const { mailOption } = req.body;
-  console.log("user handleGetMails  ", mailOption);
   const pageTokenInfo = await fetchPageTokenInfo(mailOption);
   const data = await fetchMailList(mailOption);
-  //console.log("user handleGetMails- data  ", data);
   return res.send({
     pageTokenInfo: pageTokenInfo,
     data: data,
@@ -136,7 +129,6 @@ export const handleGetMails = async (req, res) => {
 export const handleDeleteMails = (req, res) => {
   console.log("user handleDeleteMails:");
   const { id } = req.body;
-  console.log("user handleDeleteMails  ", id);
 
   deleteMail(id);
   return res.send({
@@ -148,7 +140,6 @@ export const handleDeleteMails = (req, res) => {
 export const handleUpdateMailLabels = (req, res) => {
   console.log("user handleUpdateMailLabels:");
   const { id, addLabelIds, removeLabelIds } = req.body;
-  console.log("user handleUpdateMailLabels  ", id);
 
   updateMailLabels(id, addLabelIds, removeLabelIds);
   return res.send({
@@ -160,10 +151,8 @@ export const handleUpdateMailLabels = (req, res) => {
 export const handleForwardMail = (req, res) => {
   console.log("user handleForwardMail:");
   const { id, to, body } = req.body;
-  console.log("user handleForwardMail  ", id);
 
   const data = ForwardMail(id, to, body);
-  console.log("user handleForwardMail response ", data);
   return res.send({
     success: true,
     message: "mail forwarded  successfully",
@@ -173,10 +162,8 @@ export const handleForwardMail = (req, res) => {
 export const handleReplyMail = (req, res) => {
   console.log("user handleReplyMail:");
   const { id, body } = req.body;
-  console.log("user handleReplyMail  ", id);
 
   const data = replyMail(id, body);
-  console.log("user handleReplyMail response ", data);
   return res.send({
     success: true,
     message: "mail replied  successfully",
@@ -186,10 +173,7 @@ export const handleReplyMail = (req, res) => {
 export const handleSendMail = (req, res) => {
   console.log("user handleSendMail:");
   const { to, Cc, Bcc, subject, body } = req.body;
-  console.log("user handleSendMail  ", req.body);
-
   const data = sendMail(to, Cc, Bcc, subject, body);
-  console.log("user handleSendMail response ", data);
   return res.send({
     success: true,
     message: "mail replied  successfully",

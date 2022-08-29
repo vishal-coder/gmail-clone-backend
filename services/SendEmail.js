@@ -1,15 +1,3 @@
-//https://www.labnol.org///google-api-service-account-220405
-
-// https://fusebit.io/blog/gmail-api-node-tutorial/?utm_source=www.google.com&utm_medium=referral&utm_campaign=none
-
-//https://github.com/googleapis/google-api-nodejs-client/blob/main/samples/gmail/send.js
-
-//https://googleapis.dev/nodejs/googleapis/latest/gmail/classes/Resource$Users$Messages.html#send
-
-//https://www.faqcode4u.com/faq/57184/gmail-api-for-sending-mails-in-nodejs
-//https://stackoverflow.com/questions/30995341/forward-mail-using-gmail-api?rq=1
-
-// /https://stackoverflow.com/questions/30995341/forward-mail-using-gmail-api
 import { google } from "googleapis";
 import { oAuth2Client } from "../index.js";
 export async function sendMail(to, Cc, Bcc, subject, body) {
@@ -25,6 +13,7 @@ export async function sendMail(to, Cc, Bcc, subject, body) {
 
 async function sendgMail(gmail, auth, to, Cc, Bcc, subject, body) {
   var raw = makeBody(to, Cc, Bcc, "onlinemailtesting@gmail.com", subject, body);
+
   await gmail.users.messages.send(
     {
       auth: auth,
@@ -34,7 +23,7 @@ async function sendgMail(gmail, auth, to, Cc, Bcc, subject, body) {
       },
     },
     function (err, response) {
-      console.log(err || response);
+      console.log(err);
     }
   );
 }

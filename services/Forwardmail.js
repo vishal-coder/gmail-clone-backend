@@ -1,6 +1,3 @@
-//https://stackoverflow.com/questions/30995341/forward-mail-using-gmail-api?rq=1
-
-// /https://stackoverflow.com/questions/30995341/forward-mail-using-gmail-api
 import { google } from "googleapis";
 import { oAuth2Client } from "../index.js";
 export async function ForwardMail(id, to, body) {
@@ -10,7 +7,6 @@ export async function ForwardMail(id, to, body) {
   });
   const res = await gmail.users.messages.get({
     userId: "me",
-    // id: "182d8a94207361d3",
     id: id,
     format: "full",
   });
@@ -20,18 +16,10 @@ export async function ForwardMail(id, to, body) {
   let date;
   let mailSubject;
 
-  console.log("at end getmail-", res);
-  // console.log("at end mail body is-", res.data.payload.parts[0].body.data);
   var decodedMailBody = Buffer.from(
     res.data.payload.parts[0].body.data,
     "base64"
   ).toString("ascii");
-
-  //   var encodedMail = new Buffer(mailBody)
-  //     .toString("base64")
-  //     .replace(/\+/g, "-")
-  //     .replace(/\//g, "_");
-  //   res.data.payload.parts[0].body.data = encodedMail;
   res.data.payload.headers.map(function (header) {
     if (header.name == "To") {
       sender = header.value;
@@ -52,11 +40,9 @@ from: ${from},
 Date:${date}, 
 subject: ${mailSubject}, 
 Sender:  ${sender}`;
+
   const mailBody = body + "\n\n" + defaultForwardMsg + "\n\n" + decodedMailBody;
-
-  //   console.log("at end encodedMail-", encodedMail);
   sendMail(gmail, oAuth2Client, to, mailSubject, mailBody);
-
   return res.data.labelIds;
 }
 
