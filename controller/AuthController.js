@@ -185,10 +185,10 @@ export const handleReplyMail = (req, res) => {
 
 export const handleSendMail = (req, res) => {
   console.log("user handleSendMail:");
-  const { to, subject, body } = req.body;
+  const { to, Cc, Bcc, subject, body } = req.body;
   console.log("user handleSendMail  ", req.body);
 
-  const data = sendMail(to, subject, body);
+  const data = sendMail(to, Cc, Bcc, subject, body);
   console.log("user handleSendMail response ", data);
   return res.send({
     success: true,

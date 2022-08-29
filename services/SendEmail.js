@@ -12,19 +12,19 @@
 // /https://stackoverflow.com/questions/30995341/forward-mail-using-gmail-api
 import { google } from "googleapis";
 import { oAuth2Client } from "../index.js";
-export async function sendMail(to, subject, body) {
+export async function sendMail(to, Cc, Bcc, subject, body) {
   var gmail = await google.gmail({
     auth: oAuth2Client,
     version: "v1",
   });
 
-  const res = await sendgMail(gmail, oAuth2Client, to, subject, body);
+  const res = await sendgMail(gmail, oAuth2Client, to, Cc, Bcc, subject, body);
 
   return res;
 }
 
-async function sendgMail(gmail, auth, to, subject, body) {
-  var raw = makeBody(to, "onlinemailtesting@gmail.com", subject, body);
+async function sendgMail(gmail, auth, to, Cc, Bcc, subject, body) {
+  var raw = makeBody(to, Cc, Bcc, "onlinemailtesting@gmail.com", subject, body);
   await gmail.users.messages.send(
     {
       auth: auth,
@@ -39,13 +39,19 @@ async function sendgMail(gmail, auth, to, subject, body) {
   );
 }
 
-function makeBody(to, from, subject, message) {
+function makeBody(to, Cc, Bcc, from, subject, message) {
   var str = [
     'Content-Type: text/plain; charset="UTF-8"\n',
     "MIME-Version: 1.0\n",
     "Content-Transfer-Encoding: 7bit\n",
     "to: ",
     to,
+    "\n",
+    "Cc: ",
+    Cc,
+    "\n",
+    "Bcc: ",
+    Bcc,
     "\n",
     "from: ",
     from,
