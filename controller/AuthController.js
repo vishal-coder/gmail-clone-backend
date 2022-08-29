@@ -74,7 +74,7 @@ export const handleGoogleRedirect = async (req, res) => {
     });
 
     res.header("x-auth-token", token);
-    res.redirect("http://localhost:3000/?token=" + token);
+    res.redirect(`${process.env.CLIENT_URL}/?token=${token}`);
   });
 };
 
